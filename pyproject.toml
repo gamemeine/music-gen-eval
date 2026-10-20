@@ -1,0 +1,20 @@
+[project]
+name = "music-gen-eval"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "grzegorzstatkiewicz", email = "grzegorz.statkiewicz@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+music-gen-eval = "music_gen_eval:main"
+
+[build-system]
+requires = ["uv_build>=0.9.3,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""

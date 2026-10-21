@@ -38,50 +38,50 @@
 
 ---
 
-## 1. Generatory muzyki
+## 1. Music Generation Models
 
 ### MusicGen Small (Meta)
 
-Autoregresyjny generator muzyki wykorzystany w pracy Li et al. (2026). Umożliwia ekstrakcję trzech sygnałów wewnętrznych: prediction loss, prediction entropy oraz cech SAE. Posłuży do reprodukcji wyników wcześniejszych badań.
+An autoregressive music generation model used in the study by Li et al. (2026). It allows the extraction of three intrinsic signals: prediction loss, prediction entropy, and SAE features. It will be used to reproduce the results of previous research.
 
 ### Stable Audio 3 Small Music Base (Stability AI) — Teacher
 
-Bazowy generator muzyki, który posłuży jako punkt odniesienia do badania wpływu przyspieszenia modelu. Pełni rolę teachera, czyli modelu bazowego, którego działanie porównamy z wersją przyspieszoną. Pozwoli sprawdzić, czy jego sygnały wewnętrzne korelują z ocenami ludzkimi.
+A base music generation model that will serve as a reference for studying the effects of model acceleration. It acts as the teacher, meaning that its performance will be compared with that of the accelerated version. We will investigate whether its intrinsic signals correlate with human ratings.
 
 ### Stable Audio 3 Small Music (Stability AI) — Accelerated Model
 
-Wersja modelu po przyspieszającym post-trainingu. Pełni rolę studenta w eksperymencie, ponieważ generuje muzykę szybciej, wykorzystując mniej kroków. Pozwoli zbadać, czy przyspieszenie wpływa na skuteczność oceniania muzyki za pomocą intrinsic signals.
+A version of the model that has undergone acceleration through post-training. It acts as the student in the experiment, generating music faster using fewer steps. It will allow us to investigate whether acceleration affects the effectiveness of music quality evaluation based on intrinsic signals.
 
-## 2. Zewnętrzne modele oceniające (Judges)
+## 2. External Evaluation Models (Judges)
 
-Do oceny skuteczności intrinsic signals porównamy ich wyniki z innymi modelami oceniającymi muzykę.
+To assess the effectiveness of intrinsic signals, we will compare their results with those of existing automatic music evaluation models.
 
 ### MuQ-Eval (Zhu & Li, 2026)
 
-Model przewidujący ludzkie oceny jakości muzyki na podstawie audio. Będzie głównym punktem odniesienia. Ponieważ był trenowany na MusicEval, należy uwzględnić podział danych.
+A model that predicts human music quality ratings based on audio. It will serve as the main baseline. Since it was trained on MusicEval, appropriate data splits must be considered.
 
 ### Audiobox Aesthetics (Meta)
 
-Model oceniający estetykę nagrań, m.in. Production Quality i Content Enjoyment. Posłuży jako dodatkowy, niezależny evaluator jakości audio.
+A model that evaluates audio aesthetics, including Production Quality and Content Enjoyment. It will serve as an additional, independent audio quality evaluator.
 
 ### LAION-CLAP
 
-Model mierzący podobieństwo tekstu i audio. Posłuży do sprawdzenia zgodności muzyki z promptem, a nie bezpośredniej oceny jej jakości.
+A model that measures similarity between text and audio. It will be used to evaluate how well the generated music matches the text prompt, rather than directly assessing its overall quality.
 
-## 3. Benchmarki
+## 3. Benchmarks
 
 ### MusicEval (Liu et al., 2025)
 
-2748 klipów z ocenami ekspertów, pochodzących z 31 generatorów. Podstawowy benchmark do reprodukcji wyników i porównania korelacji z ludzkimi ocenami.
+A dataset containing 2,748 music clips from 31 generators, rated by experts. It will serve as the main benchmark for reproducing previous results and comparing correlations with human ratings.
 
 ### MusicPrefs
 
-Zbiór porównań par utworów ocenianych przez słuchaczy. Posłuży do badania self-preference, czyli faworyzowania własnych generacji przez modele.
+A dataset containing pairwise comparisons of music clips evaluated by listeners. It will be used to investigate self-preference, meaning whether models favor their own generated outputs.
 
 ### AIME
 
-Benchmark zawierający ludzkie preferencje dotyczące wygenerowanej muzyki. Posłuży do sprawdzenia generalizacji wyników na innym zbiorze danych.
+A benchmark containing human preferences for AI-generated music. It will be used to evaluate whether the results generalize to another dataset.
 
 ### SongEval (Yao et al., 2025)
 
-Benchmark oceniający estetykę pełnych piosenek, m.in. muzykalność, spójność i wokal. Posłuży do sprawdzenia działania metody na dłuższych, bardziej złożonych utworach.
+A benchmark evaluating the aesthetics of full-length songs, including musicality, coherence, and vocals. It will be used to test whether the method works on longer and more complex musical pieces.

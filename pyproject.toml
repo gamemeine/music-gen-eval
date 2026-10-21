@@ -6,8 +6,24 @@ readme = "README.md"
 authors = [
     { name = "grzegorzstatkiewicz", email = "grzegorz.statkiewicz@gmail.com" }
 ]
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "huggingface-hub>=0.26,<1",
+    "numpy==1.26.4",
+    "pandas>=2.2,<3",
+    "scipy==1.13.1",
+    "soundfile>=0.12,<0.14",
+    "torch==2.6.0",
+    "torchaudio==2.6.0",
+    "transformers==4.44.2",
+    "tqdm>=4.66,<5",
+    "rich>=15.0.0",
+    "seaborn>=0.13.2",
+    "matplotlib>=3.11.2",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<9", "ruff>=0.11"]
 
 [project.scripts]
 music-gen-eval = "music_gen_eval:main"
@@ -18,3 +34,7 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-root = ""
+
+[tool.ruff]
+extend-exclude = ["external"]
+line-length = 121

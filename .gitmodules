@@ -1,0 +1,3 @@
+[submodule "external/meva"]
+	path = external/meva
+	url = https://github.com/YoEv/MEva.git

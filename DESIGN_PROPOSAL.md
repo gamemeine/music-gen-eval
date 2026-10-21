@@ -171,7 +171,7 @@ Below we report the results we got on the test split of MusicEval (trained on th
 |--------------|---------------|---------------|---------------|---------------|
 | _Ours_ |||||
 | loss         | 0.5419        | 0.5610        | 0.4505        | 0.5276        |
-| entropy      | <u>0.6131</u> | <u>0.6279</u> | <u>0.3955</u> | <u>0.4988</u> |
+| entropy      | <ins>0.6131</ins> | <ins>0.6279</ins> | <ins>0.3955</ins> | <ins>0.4988</ins> |
 | loss-entropy | 0.5724        | 0.5907        | 0.4372        | 0.5204        |
 | _Reported by authors (Li et al., 2026, Table 1)_ |||||
 | loss         | 0.55          | 0.56          | —             | —             |
@@ -195,7 +195,7 @@ To determine how well our the trained classifier generalizes to unseen systems, 
 | Experiment   | r ↑           | ρ ↑           | MSE ↓         | MAE ↓         |
 |--------------|---------------|---------------|---------------|---------------|
 | loss         | 0.5517        | 0.4986        | 0.4885        | 0.5733        |
-| entropy      | <u>0.7063</u> | <u>0.7195</u> | <u>0.3398</u> | <u>0.4635</u> |
+| entropy      | <ins>0.7063</ins> | <ins>0.7195</ins> | <ins>0.3398</ins> | <ins>0.4635</ins> |
 | loss-entropy | 0.6139        | 0.5894        | 0.4353        | 0.5412        |
 
 where metrics are the same as in the previous table. The entropy-only variant performed best across all four metrics, same as before. This suggest that its predictive signal transfers to these systems without training on their outputs and provides promising results for the next steps of the project.

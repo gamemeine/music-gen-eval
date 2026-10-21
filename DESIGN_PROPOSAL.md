@@ -34,3 +34,72 @@
 | #12 (31.12-6.01) |  |  |
 | #13 (7.01-13.01) |  | spisanie artykułu, opracowanie wyników eksperymentów, zadbanie o kod i refaktor |
 | #14 (14.01-15.01) | 15.01 - deadline | poprawki do artykułu, zgłoszenie |
+
+
+## Initial literature review - starting point
+
+**Search query: Using music generator's intrinstic signal to predict human ratings of generated music samples**
+
+
+The paper by Li et al. (2026) uses MusicGen music generator model developed by Meta to test wheter it's intrinsic signals can be used to predict human ratings. The following signals from the model are used:
+* Predicton Loss
+* Prediction entropy
+*  Concepts extracted from the model using a sparse autoencoder (SAE)
+The authors use five open music evaluation datasets to test their approach:
+* MusicEval
+* SongEval
+* MusicPref
+* AIME
+* Music Arena
+
+The general finding are that if the model is confident and wrong with its predictions vs true tokens (low entropy, high loss) the lower the human rating of the song. The concepts (internal representations) captured using SAE also seem to separate good audio form purely generated samples.
+
+### The experiment setup
+
+![alt text](img/li-et-al-2026-1.png)
+The generator model of choice is the original pre-trained, auto-regressive model MusicGen from Meta.
+
+Three intrinstic signals from the model are captured:
+
+**Loss Curve**. This is to model listener's surprise. This is to check how likely it would be that for a given sequence the model would generate something similar. More concretely its the negative log-likelyhood of the ground truth token under the model's next-token distribution:
+$l_{t} = -logp_{\theta}(x_{t}|x_{<t})$
+
+If the model finds that its highly probable to get ground truth token $x_{t}$ given the previous ground truth token $x_{t-1}$ then they loss is close to 0.
+
+**Predictive Entropy**. This models how uncertain the listener is about what come net. It computes the entropy $p_{\theta}(*|x_{<t})$. 
+
+
+**SAE Latents**. They aim to capture models internal representation of given sample, which may capture the general music concepts like timbre, register or harmony. For this task a previously developed model by Singh et. al (2025) is used. This model uses Sparse Auto-Encoders (SAE) which takes in the generator's internal activations, passes them through SAE and outputs 4,096 sparse feature set.
+
+**The prediction model**. The model is a deep neural network, consisting of two 1D-CNN encoder one for Loss and Entropy curve and one for the SAE Latent features. The outputs of these CNN layers are concatenated and fed through a MLP which produces values (music ratings) in range $[1,5]$.
+
+![alt text](img/li-et-al-2026-2.png)
+
+
+## Other works
+
+
+**When Noise Lowers the Loss: Rethinking Likelihood-Based Evaluation in Music Large Language Models (Li et al., 2026).**
+
+In this papers authors took the MusicGen model a tested how its prediction loss changes when music samples are distorted with added noise. The important finding here is that adding noise does not always make the prediction loss higher. Low prediction loss in itself seem not enough to gauge wheter music sample is good or bad  - the general pattern or curve of the loss is more informative
+
+**The experiment setup**
+
+![alt text](img/li-et-al-2026-3.png)
+
+Take pairs of audio samples, original and one with added noise.  Compute token-wise prediction loss curves for each. Compute the delta between the curves.
+
+
+**Percieving music quality with GANs (Hilmkil, Thome, Arpteg, 2020)**
+
+The authors use GAN discriminator to evaluate music quality without training it on human ratings. The GAN was setup in the following way:
+* Generator tries to generate realistic music.
+* Disriminator tries to tell apart real music from generated.
+
+After training the use the Discriminator as a music-quality judge. They provide the discriminator with a real music sample and use its output as a score of music quality.
+
+To train a model a data was sampled from the Epidemic Sound library which contains profesionally recorded audio clips across different genres. This was used to train the GAN and a held out set was used to test it. The held out set was also independently rated by humans. The held out set was further enriched but adding distorted version of the clips.
+
+Finally the authors used spearman's correlation coefficient to calculate the correaltion between raw Discriminator score and rating on 1-5 scale.
+
+The finding was that in general the Disriminator outputs had a positive correlation with human ratings.

@@ -36,65 +36,68 @@
 | #14 (14.01-15.01) | 15.01 - deadline | Poprawki do artykułu, redakcja, zgłoszenie. |
 
 
-## 1. Music Generation Models
+## Initial literature review
 
-### MusicGen Small (Meta)
+### Music generation models
+
+#### MusicGen Small (Meta)
 
 An autoregressive music generation model used in the study by Li et al. (2026). It allows the extraction of three intrinsic signals: prediction loss, prediction entropy, and SAE features. It will be used to reproduce the results of previous research.
 
-### Stable Audio 3 Small Music Base (Stability AI) — Teacher
+#### Stable Audio 3 Small Music Base (Stability AI) — Teacher
 
 A base music generation model that will serve as a reference for studying the effects of model acceleration. It acts as the teacher, meaning that its performance will be compared with that of the accelerated version. We will investigate whether its intrinsic signals correlate with human ratings.
 
-### Stable Audio 3 Small Music (Stability AI) — Accelerated Model
+#### Stable Audio 3 Small Music (Stability AI) — Accelerated Model
 
 A version of the model that has undergone acceleration through post-training. It acts as the student in the experiment, generating music faster using fewer steps. It will allow us to investigate whether acceleration affects the effectiveness of music quality evaluation based on intrinsic signals.
 
-## 2. External Evaluation Models (Judges)
+### External evaluation models
 
 To assess the effectiveness of intrinsic signals, we will compare their results with those of existing automatic music evaluation models.
 
-### MuQ-Eval (Zhu & Li, 2026)
+#### MuQ-Eval (Zhu & Li, 2026)
 
 A model that predicts human music quality ratings based on audio. It will serve as the main baseline. Since it was trained on MusicEval, appropriate data splits must be considered.
 
-### Audiobox Aesthetics (Meta)
+#### Audiobox Aesthetics (Meta)
 
 A model that evaluates audio aesthetics, including Production Quality and Content Enjoyment. It will serve as an additional, independent audio quality evaluator.
 
-### LAION-CLAP
+#### LAION-CLAP
 
 A model that measures similarity between text and audio. It will be used to evaluate how well the generated music matches the text prompt, rather than directly assessing its overall quality.
 
-## 3. Benchmarks
+### Evaluation benchmarks
 
-### MusicEval (Liu et al., 2025)
+#### MusicEval (Liu et al., 2025)
 
 A dataset containing 2,748 music clips from 31 generators, rated by experts. It will serve as the main benchmark for reproducing previous results and comparing correlations with human ratings.
 
-### MusicPrefs
+#### MusicPrefs
 
 A dataset containing pairwise comparisons of music clips evaluated by listeners. It will be used to investigate self-preference, meaning whether models favor their own generated outputs.
 
-### AIME
+#### AIME
 
 A benchmark containing human preferences for AI-generated music. It will be used to evaluate whether the results generalize to another dataset.
 
-### SongEval (Yao et al., 2025)
+#### SongEval (Yao et al., 2025)
 
 A benchmark evaluating the aesthetics of full-length songs, including musicality, coherence, and vocals. It will be used to test whether the method works on longer and more complex musical pieces.
 
+### Intrinsic signals for music evaluation (Li et al., 2026)
 
-## Initial literature review - starting point
-
-**Search query: Using music generator's intrinstic signal to predict human ratings of generated music samples**
-
+**Search query:** Using music generators' intrinsic signals to predict human ratings of generated music
 
 The paper by Li et al. (2026) uses MusicGen music generator model developed by Meta to test wheter it's intrinsic signals can be used to predict human ratings. The following signals from the model are used:
+
 * Predicton Loss
 * Prediction entropy
 *  Concepts extracted from the model using a sparse autoencoder (SAE)
+
 The authors use five open music evaluation datasets to test their approach:
+
 * MusicEval
 * SongEval
 * MusicPref
@@ -103,9 +106,10 @@ The authors use five open music evaluation datasets to test their approach:
 
 The general finding are that if the model is confident and wrong with its predictions vs true tokens (low entropy, high loss) the lower the human rating of the song. The concepts (internal representations) captured using SAE also seem to separate good audio form purely generated samples.
 
-### The experiment setup
+#### Experimental setup
 
 ![alt text](img/li-et-al-2026-1.png)
+
 The generator model of choice is the original pre-trained, auto-regressive model MusicGen from Meta.
 
 Three intrinstic signals from the model are captured:
@@ -117,31 +121,28 @@ If the model finds that its highly probable to get ground truth token $x_{t}$ gi
 
 **Predictive Entropy**. This models how uncertain the listener is about what come net. It computes the entropy $p_{\theta}(*|x_{<t})$. 
 
-
 **SAE Latents**. They aim to capture models internal representation of given sample, which may capture the general music concepts like timbre, register or harmony. For this task a previously developed model by Singh et. al (2025) is used. This model uses Sparse Auto-Encoders (SAE) which takes in the generator's internal activations, passes them through SAE and outputs 4,096 sparse feature set.
 
 **The prediction model**. The model is a deep neural network, consisting of two 1D-CNN encoder one for Loss and Entropy curve and one for the SAE Latent features. The outputs of these CNN layers are concatenated and fed through a MLP which produces values (music ratings) in range $[1,5]$.
 
 ![alt text](img/li-et-al-2026-2.png)
 
+### Related work
 
-## Other works
-
-
-**When Noise Lowers the Loss: Rethinking Likelihood-Based Evaluation in Music Large Language Models (Li et al., 2026).**
+#### When Noise Lowers the Loss (Li et al., 2026)
 
 In this papers authors took the MusicGen model a tested how its prediction loss changes when music samples are distorted with added noise. The important finding here is that adding noise does not always make the prediction loss higher. Low prediction loss in itself seem not enough to gauge wheter music sample is good or bad  - the general pattern or curve of the loss is more informative
 
-**The experiment setup**
+##### Experimental setup
 
 ![alt text](img/li-et-al-2026-3.png)
 
 Take pairs of audio samples, original and one with added noise.  Compute token-wise prediction loss curves for each. Compute the delta between the curves.
 
-
-**Percieving music quality with GANs (Hilmkil, Thome, Arpteg, 2020)**
+#### Perceiving music quality with GANs (Hilmkil, Thome and Arpteg, 2020)
 
 The authors use GAN discriminator to evaluate music quality without training it on human ratings. The GAN was setup in the following way:
+
 * Generator tries to generate realistic music.
 * Disriminator tries to tell apart real music from generated.
 

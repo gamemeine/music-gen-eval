@@ -36,6 +36,55 @@
 | #14 (14.01-15.01) | 15.01 - deadline | poprawki do artykułu, zgłoszenie |
 
 
+## 1. Music Generation Models
+
+### MusicGen Small (Meta)
+
+An autoregressive music generation model used in the study by Li et al. (2026). It allows the extraction of three intrinsic signals: prediction loss, prediction entropy, and SAE features. It will be used to reproduce the results of previous research.
+
+### Stable Audio 3 Small Music Base (Stability AI) — Teacher
+
+A base music generation model that will serve as a reference for studying the effects of model acceleration. It acts as the teacher, meaning that its performance will be compared with that of the accelerated version. We will investigate whether its intrinsic signals correlate with human ratings.
+
+### Stable Audio 3 Small Music (Stability AI) — Accelerated Model
+
+A version of the model that has undergone acceleration through post-training. It acts as the student in the experiment, generating music faster using fewer steps. It will allow us to investigate whether acceleration affects the effectiveness of music quality evaluation based on intrinsic signals.
+
+## 2. External Evaluation Models (Judges)
+
+To assess the effectiveness of intrinsic signals, we will compare their results with those of existing automatic music evaluation models.
+
+### MuQ-Eval (Zhu & Li, 2026)
+
+A model that predicts human music quality ratings based on audio. It will serve as the main baseline. Since it was trained on MusicEval, appropriate data splits must be considered.
+
+### Audiobox Aesthetics (Meta)
+
+A model that evaluates audio aesthetics, including Production Quality and Content Enjoyment. It will serve as an additional, independent audio quality evaluator.
+
+### LAION-CLAP
+
+A model that measures similarity between text and audio. It will be used to evaluate how well the generated music matches the text prompt, rather than directly assessing its overall quality.
+
+## 3. Benchmarks
+
+### MusicEval (Liu et al., 2025)
+
+A dataset containing 2,748 music clips from 31 generators, rated by experts. It will serve as the main benchmark for reproducing previous results and comparing correlations with human ratings.
+
+### MusicPrefs
+
+A dataset containing pairwise comparisons of music clips evaluated by listeners. It will be used to investigate self-preference, meaning whether models favor their own generated outputs.
+
+### AIME
+
+A benchmark containing human preferences for AI-generated music. It will be used to evaluate whether the results generalize to another dataset.
+
+### SongEval (Yao et al., 2025)
+
+A benchmark evaluating the aesthetics of full-length songs, including musicality, coherence, and vocals. It will be used to test whether the method works on longer and more complex musical pieces.
+
+
 ## Initial literature review - starting point
 
 **Search query: Using music generator's intrinstic signal to predict human ratings of generated music samples**

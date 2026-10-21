@@ -17,7 +17,7 @@ OUTPUT_DIR=outputs/meva/repro
 CHECKPOINTS=()
 for VARIANT in "${VARIANTS[@]}"; do
     uv run -m music_gen_eval.meva.train \
-        --dataset-dir data/MusicEval-full \
+        --split-dir data/splits/musiceval \
         --feature-dir outputs/meva/features \
         --output-dir ${OUTPUT_DIR}/${VARIANT} \
         --variant ${VARIANT} \
@@ -33,7 +33,7 @@ done
 # Evaluation
 uv run python -m music_gen_eval.meva.evaluate \
     --checkpoints ${CHECKPOINTS[@]} \
-    --dataset-dir data/MusicEval-full \
+    --split-dir data/splits/musiceval \
     --feature-dir outputs/meva/features \
     --device auto \
     --format md

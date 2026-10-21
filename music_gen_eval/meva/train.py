@@ -19,15 +19,12 @@ from music_gen_eval.utils import select_device
 from .nets import LossCurveCNN
 
 
-def read_split(dataset_dir, split, exclude_systems=()):
-    scores = pd.read_csv(
-        dataset_dir / "sets" / f"{split}_mos_list.txt",
-        names=["filename", "score", "alignment"],
-    )
+def read_split(split_dir, split, exclude_systems=()):
+    scores = pd.read_csv(split_dir / f"{split}.csv")
     rows = []
 
     for row in scores.itertuples(index=False):
-        clip_id = Path(row.filename).stem
+        clip_id = Path(row.audio_path).stem
         system, prompt = clip_id.rsplit("-", 1)[1].split("_")
 
         if system in exclude_systems:
@@ -36,7 +33,7 @@ def read_split(dataset_dir, split, exclude_systems=()):
         rows.append(
             {
                 "clip_id": clip_id,
-                "audio_path": str(dataset_dir / "wav" / row.filename),
+                "audio_path": row.audio_path,
                 "system_id": system,
                 "prompt_id": prompt,
                 "score": float(row.score),
@@ -169,7 +166,7 @@ def predict(model, loader, device):
 
 
 def train(
-    dataset_dir,
+    split_dir,
     feature_dir,
     output_dir,
     epochs=100,
@@ -188,7 +185,7 @@ def train(
     torch.manual_seed(seed)
     device = select_device(device_name)
 
-    records = {split: read_split(dataset_dir, split, exclude_systems) for split in ("train", "dev")}
+    records = {split: read_split(split_dir, split, exclude_systems) for split in ("train", "val")}
 
     for split, rows in records.items():
         if not rows:
@@ -213,6 +210,7 @@ def train(
     config = {
         "variant": variant,
         "exclude_systems": list(exclude_systems),
+        "split_dir": str(split_dir.resolve()),
         "epochs": epochs,
         "batch_size": batch_size,
         "seed": seed,
@@ -226,8 +224,7 @@ def train(
         "format_version": 2,
         "config": config,
         "signals": variant.replace("-", "_"),
-        "target": "musical_impression",
-        "dataset_dir": str(dataset_dir),
+        "target": "csv_score",
         "device": str(device),
     }
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -250,7 +247,7 @@ def train(
             optimizer.step()
             total += loss.item() * len(targets)
 
-        y, p = predict(model, loaders["dev"], device)
+        y, p = predict(model, loaders["val"], device)
         val_loss = float(np.mean((y - p) ** 2))
         correlation = float(pearsonr(y, p).statistic) if np.ptp(y) and np.ptp(p) else None
 
@@ -287,7 +284,7 @@ def train(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset-dir", type=Path, default=Path("data/MusicEval-full"))
+    parser.add_argument("--split-dir", type=Path, default=Path("data/splits/musiceval"), help="Directory with train.csv, val.csv and test.csv containing score and audio_path.")
     parser.add_argument("--feature-dir", type=Path, default=Path("outputs/meva/features"))
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--overwrite", action="store_true", help="Replace existing training outputs and start from scratch.")
@@ -308,14 +305,14 @@ if __name__ == "__main__":
 
     rows = [
         row
-        for split in ("train", "dev", "test")
-        for row in read_split(args.dataset_dir, split, args.exclude_systems if split != "test" else ())
+        for split in ("train", "val", "test")
+        for row in read_split(args.split_dir, split, args.exclude_systems if split != "test" else ())
     ]
     extract(rows, args.feature_dir, args.device)
 
     print(
         train(
-            args.dataset_dir,
+            args.split_dir,
             args.feature_dir,
             args.output_dir,
             args.epochs,

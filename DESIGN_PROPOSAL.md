@@ -106,27 +106,27 @@ The finding was that in general the Disriminator outputs had a positive correlat
 
 ## Initial experiments and first results
 
-We conducted an initial experiment to check if the results described by Li et al. (2026) ([MEva](https://github.com/YoEv/MEva/tree/main)) could be reproduced. We selected the the loss and entropy signals and 3 variants described by the authors:
+We conducted an initial experiment to check if the results described by Li et al. (2026) ([MEva](https://github.com/YoEv/MEva/tree/main)) could be reproduced. We use the smaller variant of MusicGen - `facebook/musicgen-small`. We selected the the loss and entropy signals and 3 variants described by the authors:
 1. single-loss (prediction based on loss)
 2. single-entropy (prediction based on entropy)
 3. loss-entropy (prediction based on both loss and entropy)
 
-the SAE variants (using latents from SAE) were held out for now and to test later. We used the [MusicEval dataset](https://huggingface.co/datasets/BAAI/MusicEval) (Liu et al., 2025), which is one of the subsets used in MEva paper. It already contains the train / dev / test splits, which authors also followed (on paper). The classification model was copied directly from the authors' code (`music_gen_eval/meva/nets.py`). The experiments follow same hyperparameters as described by authors, while at the end we pick the best performing checkpoint on the dev split by MSE loss value.
+the SAE variants (using latents from SAE) were held out for now and to test later. We used the [MusicEval dataset](https://huggingface.co/datasets/BAAI/MusicEval) (Liu et al., 2025), which is one of the subsets used in MEva paper. It already contains the train / dev / test splits. The authors report in the paper that they use the custom stratified splits, we follow their approach and generated corresponding splits using their script. For the feature extraction, we use authors approach and code (`external/meva/lib/repro/musicgen_pattern.py`). The classification model was copied directly from the authors' code (`music_gen_eval/meva/nets.py`). The experiments follow same hyperparameters as described by authors, while at the end we pick the best performing checkpoint on the dev split by MSE loss value. We provide our own implementation for training loop and evaluation suite, but follow authors guidelines and parameters setup. For now we evaluate the single seed, future work should measure uncertaininty from different seeds and better estimate the mean value than signle run.
 
 ### Reproduction of the results
 
+Below we report the results we got on the test split of MusicEval (trained on the train split) from 3 corresponding signal variants. Next to our results we provide the results reported by the authors in the paper from [Table 1](https://arxiv.org/html/2609.37710v1).
+
 | Experiment   | r ↑           | ρ ↑           | MSE ↓         | MAE ↓         |
 |--------------|---------------|---------------|---------------|---------------|
-| Ours | | | | |
-| loss         | 0.6388        | 0.6519        | 0.4614        | 0.5206        |
-| entropy      | <u>0.7020</u> | <u>0.7048</u> | <u>0.3849</u> | <u>0.4768</u> |
-| loss-entropy | 0.6631        | 0.6722        | 0.4310        | 0.5074        |
-| Reported by authors (Li et al., 2026) | | | | |
+| _Ours_ |||||
+| loss         | 0.5419        | 0.5610        | 0.4505        | 0.5276        |
+| entropy      | <u>0.6131</u> | <u>0.6279</u> | <u>0.3955</u> | <u>0.4988</u> |
+| loss-entropy | 0.5724        | 0.5907        | 0.4372        | 0.5204        |
+| _Reported by authors (Li et al., 2026, Table 1)_ |||||
 | loss         | 0.55          | 0.56          | —             | —             |
-| entropy      | 0.66          | 0.68          | —             | —             |
+| entropy      | <ins>0.66</ins>   | <ins>0.68</ins>   | —             | —             |
 | loss-entropy | 0.59          | 0.61          | —             | —             |
-
-The reported values are from [Table 1](https://arxiv.org/html/2609.37710v1), using the MusicEval columns and the MusicGen-small values (before the slash). MSE and MAE were not reported.
 
 where:
 - r - Pearson correlation coefficient
@@ -134,16 +134,19 @@ where:
 - MSE - Mean Squared Error
 - MAE - Mean Absolute Error
 
-of predicted ratings and average human ratings. Best results among our runs are underlined.
+of predicted ratings and average human ratings. Best results among our runs are underlined. 
+
+Similar to the authors, in our experiments variant using only the entropy signal achieved the highest correlation. Our loss and loss–entropy correlations are close to the reported values. Also, there is a visible difference in correlations among entropy variants. Also, the authors state in the paper that they predict only the musicality score, but the split generation script we used defines a score as an average of musicality and alignment. Future work should check if the difference in correlation is due to this difference in score definition or other factors.
 
 ### Results on unseen systems
 
+To determine how well our the trained classifier generalizes to unseen systems, we evaluated it on the test split of MusicEval dataset, which contains samples from systems that we excluded from the training set (20% of the systems). The results are reported below.
+
 | Experiment   | r ↑           | ρ ↑           | MSE ↓         | MAE ↓         |
 |--------------|---------------|---------------|---------------|---------------|
-| Ours (unseen systems) | | | | |
-| loss         | 0.6751        | 0.6353        | 0.5303        | 0.5876        |
-| entropy      | <u>0.8104</u> | <u>0.7752</u> | <u>0.3440</u> | <u>0.4677</u> |
-| loss-entropy | 0.7084        | 0.6905        | 0.4932        | 0.5727        |
+| loss         | 0.5517        | 0.4986        | 0.4885        | 0.5733        |
+| entropy      | <u>0.7063</u> | <u>0.7195</u> | <u>0.3398</u> | <u>0.4635</u> |
+| loss-entropy | 0.6139        | 0.5894        | 0.4353        | 0.5412        |
 
-Metrics are the same as in the previous table.
+where metrics are the same as in the previous table. The entropy-only variant performed best across all four metrics, same as before. This suggest that its predictive signal transfers to these systems without training on their outputs and provides promising results for the next steps of the project.
 

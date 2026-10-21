@@ -31,11 +31,13 @@ def metrics(y, p):
     }
 
 
-def evaluate(checkpoint_path, dataset_dir, feature_dir, output_dir, device_name="auto", systems=(), show_table=True):
+def evaluate(
+    checkpoint_path, split_dir, feature_dir, output_dir, device_name="auto", systems=(), show_table=True,
+):
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
     variant = checkpoint["config"].get("variant", checkpoint.get("signals", "loss_entropy").replace("_", "-"))
 
-    rows = read_split(dataset_dir, "test")
+    rows = read_split(split_dir, "test")
     if systems:
         print(f"Filtering test clips to {len(systems)} systems: {', '.join(systems)}")
         rows = [row for row in rows if row["system_id"] in systems]
@@ -53,6 +55,7 @@ def evaluate(checkpoint_path, dataset_dir, feature_dir, output_dir, device_name=
     report = {
         "experiment": checkpoint_path.parent.name,
         "variant": variant,
+        "split_dir": str(split_dir.resolve()),
         "systems": sorted({row["system_id"] for row in rows}),
         **metrics(targets, predictions),
     }
@@ -118,7 +121,7 @@ if __name__ == "__main__":
         "--checkpoint", "--checkpoints", type=Path, nargs="+",
         default=[Path("outputs/meva/repro/loss-entropy/best.pt")],
     )
-    parser.add_argument("--dataset-dir", type=Path, default=Path("data/MusicEval-full"))
+    parser.add_argument("--split-dir", type=Path, default=Path("data/splits/musiceval"))
     parser.add_argument("--feature-dir", type=Path, default=Path("outputs/meva/features"))
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--format", choices=["terminal", "md"], default="terminal", help="Output table format.")
@@ -135,7 +138,10 @@ if __name__ == "__main__":
         if args.output_dir and len(args.checkpoint) > 1:
             output = output / checkpoint.parent.name
         reports.append(
-            evaluate(checkpoint, args.dataset_dir, args.feature_dir, output, args.device, args.systems, show_table=False)
+            evaluate(
+                checkpoint, args.split_dir, args.feature_dir, output, args.device, args.systems,
+                show_table=False,
+            )
         )
 
     print_results(reports, args.format)

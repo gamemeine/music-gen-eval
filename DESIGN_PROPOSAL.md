@@ -34,3 +34,66 @@
 | #12 (31.12-6.01) |  |  |
 | #13 (7.01-13.01) |  | spisanie artykułu, opracowanie wyników eksperymentów, zadbanie o kod i refaktor |
 | #14 (14.01-15.01) | 15.01 - deadline | poprawki do artykułu, zgłoszenie |
+
+
+---
+
+## 1. Generatory muzyki
+
+### MusicGen Small (Meta)
+
+Autoregresyjny generator muzyki wykorzystany w pracy Li et al. (2026). Umożliwia ekstrakcję trzech sygnałów wewnętrznych: prediction loss, prediction entropy oraz cech SAE. Posłuży do reprodukcji wyników wcześniejszych badań.
+
+Wagi: https://huggingface.co/facebook/musicgen-small
+
+### Stable Audio 3 Small Music Base (Stability AI) — Teacher
+
+Bazowy generator muzyki, który posłuży jako punkt odniesienia do badania wpływu przyspieszenia modelu. Pełni rolę teachera, czyli modelu bazowego, którego działanie porównamy z wersją przyspieszoną. Pozwoli sprawdzić, czy jego sygnały wewnętrzne korelują z ocenami ludzkimi.
+
+Wagi: https://huggingface.co/stabilityai/stable-audio-3-small-music-base
+
+### Stable Audio 3 Small Music (Stability AI) — Accelerated Model
+
+Wersja modelu po przyspieszającym post-trainingu. Pełni rolę studenta w eksperymencie, ponieważ generuje muzykę szybciej, wykorzystując mniej kroków. Pozwoli zbadać, czy przyspieszenie wpływa na skuteczność oceniania muzyki za pomocą intrinsic signals.
+
+Wagi: https://huggingface.co/stabilityai/stable-audio-3-small-music
+
+## 2. Zewnętrzne modele oceniające (Judges)
+
+Do oceny skuteczności intrinsic signals porównamy ich wyniki z innymi modelami oceniającymi muzykę.
+
+### MuQ-Eval (Zhu & Li, 2026)
+
+Model przewidujący ludzkie oceny jakości muzyki na podstawie audio. Będzie głównym punktem odniesienia. Ponieważ był trenowany na MusicEval, należy uwzględnić podział danych.
+
+Kod: https://github.com/dgtql/MuQ-Eval
+
+### Audiobox Aesthetics (Meta)
+
+Model oceniający estetykę nagrań, m.in. Production Quality i Content Enjoyment. Posłuży jako dodatkowy, niezależny evaluator jakości audio.
+
+Kod: https://github.com/facebookresearch/audiobox-aesthetics
+
+### LAION-CLAP
+
+Model mierzący podobieństwo tekstu i audio. Posłuży do sprawdzenia zgodności muzyki z promptem, a nie bezpośredniej oceny jej jakości.
+
+Kod: https://github.com/LAION-AI/CLAP
+
+## 3. Benchmarki
+
+### MusicEval (Liu et al., 2025)
+
+2748 klipów z ocenami ekspertów, pochodzących z 31 generatorów. Podstawowy benchmark do reprodukcji wyników i porównania korelacji z ludzkimi ocenami.
+
+### MusicPrefs
+
+Zbiór porównań par utworów ocenianych przez słuchaczy. Posłuży do badania self-preference, czyli faworyzowania własnych generacji przez modele.
+
+### AIME
+
+Benchmark zawierający ludzkie preferencje dotyczące wygenerowanej muzyki. Posłuży do sprawdzenia generalizacji wyników na innym zbiorze danych.
+
+### SongEval (Yao et al., 2025)
+
+Benchmark oceniający estetykę pełnych piosenek, m.in. muzykalność, spójność i wokal. Posłuży do sprawdzenia działania metody na dłuższych, bardziej złożonych utworach.

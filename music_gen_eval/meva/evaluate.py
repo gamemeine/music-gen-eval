@@ -9,6 +9,7 @@ import torch
 from rich import box
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 from scipy.stats import pearsonr, spearmanr
 from torch.utils.data import DataLoader
 
@@ -71,17 +72,30 @@ def evaluate(checkpoint_path, dataset_dir, feature_dir, output_dir, device_name=
 
 
 def print_results(reports, table_format="terminal"):
-    rows = [
-        [report["experiment"]]
-        + [f"{report[key]:.4f}" if report[key] is not None else "—" for key in ("pearson", "spearman", "mse", "mae")]
-        for report in reports
-    ]
+    keys = ("pearson", "spearman", "mse", "mae")
+    best = {}
+    for key in keys:
+        values = [report[key] for report in reports if report[key] is not None]
+        best[key] = (max(values) if key in ("pearson", "spearman") else min(values)) if values else None
+
+    rows = []
+    for report in reports:
+        row = [report["experiment"]]
+        for key in keys:
+            value = report[key]
+            label = f"{value:.4f}" if value is not None else "—"
+            if value is not None and value == best[key]:
+                label = f"<u>{label}</u>" if table_format == "md" else Text(label, style="underline")
+            row.append(label)
+        rows.append(row)
 
     if table_format == "md":
-        table = Table("Experiment", "r ↑", "ρ ↑", "MSE ↓", "MAE ↓", box=box.MARKDOWN)
+        headers = ("Experiment", "r ↑", "ρ ↑", "MSE ↓", "MAE ↓")
+        table = Table(*headers, box=box.MARKDOWN)
         for row in rows:
             table.add_row(*row)
-        Console(force_terminal=False).print(table)
+        width = sum(max(len(cell) for cell in column) for column in zip(headers, *rows)) + 16
+        Console(force_terminal=False, width=width).print(table)
         return
 
     names = Table("Experiment", box=None)

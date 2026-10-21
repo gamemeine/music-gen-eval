@@ -103,3 +103,47 @@ To train a model a data was sampled from the Epidemic Sound library which contai
 Finally the authors used spearman's correlation coefficient to calculate the correaltion between raw Discriminator score and rating on 1-5 scale.
 
 The finding was that in general the Disriminator outputs had a positive correlation with human ratings.
+
+## Initial experiments and first results
+
+We conducted an initial experiment to check if the results described by Li et al. (2026) ([MEva](https://github.com/YoEv/MEva/tree/main)) could be reproduced. We selected the the loss and entropy signals and 3 variants described by the authors:
+1. single-loss (prediction based on loss)
+2. single-entropy (prediction based on entropy)
+3. loss-entropy (prediction based on both loss and entropy)
+
+the SAE variants (using latents from SAE) were held out for now and to test later. We used the [MusicEval dataset](https://huggingface.co/datasets/BAAI/MusicEval) (Liu et al., 2025), which is one of the subsets used in MEva paper. It already contains the train / dev / test splits, which authors also followed (on paper). The classification model was copied directly from the authors' code (`music_gen_eval/meva/nets.py`). The experiments follow same hyperparameters as described by authors, while at the end we pick the best performing checkpoint on the dev split by MSE loss value.
+
+### Reproduction of the results
+
+| Experiment   | r ↑           | ρ ↑           | MSE ↓         | MAE ↓         |
+|--------------|---------------|---------------|---------------|---------------|
+| Ours | | | | |
+| loss         | 0.6388        | 0.6519        | 0.4614        | 0.5206        |
+| entropy      | <u>0.7020</u> | <u>0.7048</u> | <u>0.3849</u> | <u>0.4768</u> |
+| loss-entropy | 0.6631        | 0.6722        | 0.4310        | 0.5074        |
+| Reported by authors (Li et al., 2026) | | | | |
+| loss         | 0.55          | 0.56          | —             | —             |
+| entropy      | 0.66          | 0.68          | —             | —             |
+| loss-entropy | 0.59          | 0.61          | —             | —             |
+
+The reported values are from [Table 1](https://arxiv.org/html/2609.37710v1), using the MusicEval columns and the MusicGen-small values (before the slash). MSE and MAE were not reported.
+
+where:
+- r - Pearson correlation coefficient
+- ρ - Spearman's rank correlation coefficient
+- MSE - Mean Squared Error
+- MAE - Mean Absolute Error
+
+of predicted ratings and average human ratings. Best results among our runs are underlined.
+
+### Results on unseen systems
+
+| Experiment   | r ↑           | ρ ↑           | MSE ↓         | MAE ↓         |
+|--------------|---------------|---------------|---------------|---------------|
+| Ours (unseen systems) | | | | |
+| loss         | 0.6751        | 0.6353        | 0.5303        | 0.5876        |
+| entropy      | <u>0.8104</u> | <u>0.7752</u> | <u>0.3440</u> | <u>0.4677</u> |
+| loss-entropy | 0.7084        | 0.6905        | 0.4932        | 0.5727        |
+
+Metrics are the same as in the previous table.
+

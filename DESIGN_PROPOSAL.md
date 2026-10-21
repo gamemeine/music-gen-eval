@@ -20,20 +20,20 @@
 
 | Tydzień | Deadline | Opis |
 | --- | --- | --- |
-| #1 (14.10-21.10) | 21.10 - desing proposal | Design proposal, wstępny przegląd literatury |
+| #1 (14.10-21.10) | 21.10 - Desing proposal | Design proposal, wstępny przegląd literatury, wstępne eksperymenty |
 | #2 (22.10-28.10) |  | Przegląd literatury, wybranie modeli do analizy, zbiorów testowych, reprodukcja korelacji (z opisu) |
-| #3 (29.10-04.11) | 4.11 - zgłoszenie gotowości prototypu | przygotowanie środowiska ewaluacyjnego (pozwalającego na reprodukowalność wyników), wyniki podważające projekt (jeśli takie są), prototyp (wykorzystanie sygnału do oceny jednego z modeli, prosty klasyfikator) |
-| #4 (5.11-11.11) | 10.11 - deadline pierwsze spotkanie | spotkanie, sprawdzić inne modele (które oceniamy) pod kątem oceny i korelacji |
-| #5 (12.11-18.11) | standup 1 / 2 | eksperymenty z innymi modelami / metodami (czyli klasyfikatorami) bazującymi na sygnale |
-| #6 (19.11-25.11) |  |  |
-| #7 (26.11-2.12) |  |  |
-| #8 (3.12-9.12) |  |  |
-| #9 (10.12-16.12) |  |  |
-| #10 (17.12-23.12) |  |  |
-| #11 (24.12-30.12) |  |  |
-| #12 (31.12-6.01) |  |  |
-| #13 (7.01-13.01) |  | spisanie artykułu, opracowanie wyników eksperymentów, zadbanie o kod i refaktor |
-| #14 (14.01-15.01) | 15.01 - deadline | poprawki do artykułu, zgłoszenie |
+| #3 (29.10-04.11) | 4.11 - Zgłoszenie gotowości prototypu | Przygotowanie środowiska ewaluacyjnego (pozwalającego na reprodukowalność wyników), wyniki podważające projekt z wstępnie wybranych metod (jeśli takie się pojawią), prototyp (wykorzystanie sygnału do oceny jednego z modeli, prosty klasyfikator) |
+| #4 (5.11-11.11) | 10.11 - deadline pierwsze spotkanie | Spotkanie, sprawdzić inne modele (które oceniamy) pod kątem oceny i korelacji |
+| #5 (12.11-18.11) | standup 1 / 2 | Eksperymenty z innymi modelami / metodami (czyli klasyfikatorami) bazującymi na sygnale a wskazanymi po przeglądzie literatury. (np. wykorzystanie cech z autoenkoderów) |
+| #6 (19.11-25.11) |  25.11 - kolokwium |  Nauka na kolokwium |
+| #7 (26.11-2.12) |  | Porównanie wyników klasyfikacji na pełnym przejściu a prompt-only (aktywacje tylko po podaniu promptu), weryfikacja hipotezy o wpływie treści oraz sposobu formułowania promptu na ocenę.  |
+| #8 (3.12-9.12) |  |  W przypadku potwierdzenia hipotezy o znaczącym wpływie promptu na ocenę eksperymenty oraz próby mitygacji tego zjawiska. |
+| #9 (10.12-16.12) |  |  Eksperymenty z modelami teacher–student oraz sprawdzenie wpływu wielkości modeli na jakość oceny. |
+| #10 (17.12-23.12) |  |  Eksperymenty sprawdzające preferencje muzyki pochodzącej z generatora na którego sygnałach został wytrenowany klasyfikator oraz zbadanie tej zależności. Ewaluacja na dodatkowych benchmarkach, analiza generalizacji oraz porównanie. |
+| #11 (24.12-30.12) |  | Przerwa świąteczna, miejsce na kontynuacje eksperymentów z poprzednich etapów oraz plany dodatkowych ablacji. |
+| #12 (31.12-6.01) |  | Wstępne prace nad artykułem, ablacje i dodatkowe eksperymenty. |
+| #13 (7.01-13.01) |  | Spisanie artykułu, opracowanie wyników eksperymentów, zadbanie o kod i refaktor. |
+| #14 (14.01-15.01) | 15.01 - deadline | Poprawki do artykułu, redakcja, zgłoszenie. |
 
 
 ## 1. Music Generation Models

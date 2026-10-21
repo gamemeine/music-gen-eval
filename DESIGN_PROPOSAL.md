@@ -56,7 +56,7 @@ The general finding are that if the model is confident and wrong with its predic
 
 ### The experiment setup
 
-![alt text](<Pasted image 20261021131156.png>)
+![alt text](img/li-et-al-2026-1.png)
 The generator model of choice is the original pre-trained, auto-regressive model MusicGen from Meta.
 
 Three intrinstic signals from the model are captured:
@@ -73,7 +73,7 @@ If the model finds that its highly probable to get ground truth token $x_{t}$ gi
 
 **The prediction model**. The model is a deep neural network, consisting of two 1D-CNN encoder one for Loss and Entropy curve and one for the SAE Latent features. The outputs of these CNN layers are concatenated and fed through a MLP which produces values (music ratings) in range $[1,5]$.
 
-![alt text](<Pasted image 20261021131136.png>)
+![alt text](img/li-et-al-2026-2.png)
 
 
 ## Other works
@@ -85,7 +85,7 @@ In this papers authors took the MusicGen model a tested how its prediction loss 
 
 **The experiment setup**
 
-![alt text](image.png)
+![alt text](img/li-et-al-2026-3.png)
 
 Take pairs of audio samples, original and one with added noise.  Compute token-wise prediction loss curves for each. Compute the delta between the curves.
 

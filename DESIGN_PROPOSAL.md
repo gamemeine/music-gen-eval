@@ -200,3 +200,7 @@ To determine how well our the trained classifier generalizes to unseen systems, 
 
 where metrics are the same as in the previous table. The entropy-only variant performed best across all four metrics, same as before. This suggest that its predictive signal transfers to these systems without training on their outputs and provides promising results for the next steps of the project.
 
+| Model | r ↑ | ρ ↑ | MSE ↓ | MAE ↓ |
+|---|---:|---:|---:|---:|
+| Stable Audio 3 Small Music | 0.5616 | 0.5712 | 0.4371 | 0.5195 |
+| Stable Audio 3 Small Music Base | 0.5574 | 0.5679 | 0.4408 | 0.5216 |

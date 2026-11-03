@@ -1,0 +1,33 @@
+[project]
+name = "music-gen-eval-stable-audio"
+version = "0.1.0"
+description = "Isolated environment for Stable Audio 3 evaluation on MusicEval"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "stable-audio-3",
+    "numpy==2.2.6",
+    "pandas==2.2.3",
+    "scipy==1.13.1",
+    "rich>=13,<16",
+    "torch==2.7.1",
+    "torchaudio==2.7.1",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<9", "ruff>=0.11"]
+
+[tool.uv]
+package = false
+# This environment targets the Windows/NVIDIA workstation used by this project.
+# Limit resolution to avoid the upstream Linux-only CUDA 12.6 source override.
+environments = ["sys_platform == 'win32' and platform_machine == 'AMD64'"]
+
+[tool.uv.sources]
+stable-audio-3 = { git = "https://github.com/Stability-AI/stable-audio-3.git", rev = "790793b89ddceea612be9ce42ff6830d18f6fa57" }
+torch = { index = "pytorch-cu118" }
+torchaudio = { index = "pytorch-cu118" }
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true

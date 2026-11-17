@@ -44,11 +44,11 @@
 
 An autoregressive music generation model used in the study by Li et al. (2026). It allows the extraction of three intrinsic signals: prediction loss, prediction entropy, and SAE features. It will be used to reproduce the results of previous research.
 
-#### Stable Audio 3 Small Music Base (Stability AI) — Teacher
+#### Stable Audio 3 Small Music Base (Stability AI) - Teacher
 
 A base music generation model that will serve as a reference for studying the effects of model acceleration. It acts as the teacher, meaning that its performance will be compared with that of the accelerated version. We will investigate whether its intrinsic signals correlate with human ratings.
 
-#### Stable Audio 3 Small Music (Stability AI) — Accelerated Model
+#### Stable Audio 3 Small Music (Stability AI) - Accelerated Model
 
 A version of the model that has undergone acceleration through post-training. It acts as the student in the experiment, generating music faster using fewer steps. It will allow us to investigate whether acceleration affects the effectiveness of music quality evaluation based on intrinsic signals.
 
@@ -184,9 +184,46 @@ where:
 - MSE - Mean Squared Error
 - MAE - Mean Absolute Error
 
-of predicted ratings and average human ratings. Best results among our runs are underlined. 
+of predicted ratings and average human ratings. Best results among our runs are underlined.
 
 Similar to the authors, in our experiments variant using only the entropy signal achieved the highest correlation. Our loss and loss–entropy correlations are close to the reported values. Also, there is a visible difference in correlations among entropy variants. Also, the authors state in the paper that they predict only the musicality score, but the split generation script we used defines a score as an average of musicality and alignment. Future work should check if the difference in correlation is due to this difference in score definition or other factors.
+
+Below are results broken down by system:
+
+| System | Name | Test clips | Loss ρ | Entropy ρ | Loss-entropy ρ |
+|---|---|---:|---:|---:|---:|
+| S001 | MusicLDM | 2 | -1.0000 | -1.0000 | -1.0000 |
+| S002 | Suno | 12 | 0.4214 | 0.5630 | <ins>0.5921</ins> |
+| S003 | TianGong-SkyMusic | 17 | 0.0912 | -0.0986 | <ins>0.1689</ins> |
+| S004 | Udio | 15 | -0.3465 | -0.0383 | <ins>0.2444</ins> |
+| S006 | UniAudio | 2 | - | - | - |
+| S007 | MAGNET-small-30 | 22 | 0.1306 | <ins>0.3913</ins> | 0.3110 |
+| S008 | MAGNET-medium-30 | 21 | -0.0998 | -0.0202 | <ins>0.1605</ins> |
+| S009 | TencentMusic-QiMingXing | 12 | -0.3123 | -0.4105 | -0.0526 |
+| S010 | MusicGen-small | 16 | -0.2422 | -0.1241 | <ins>0.0414</ins> |
+| S011 | MusicGen-medium | 10 | -0.0431 | -0.0739 | -0.3754 |
+| S012 | MusicGen-large | 14 | -0.1858 | <ins>0.1416</ins> | -0.4182 |
+| S013 | Mousai | 6 | 0.3769 | 0.2029 | <ins>0.6377</ins> |
+| S014 | MusicLM | 20 | 0.0837 | <ins>0.4704</ins> | 0.1870 |
+| S015 | Riffusion | 8 | -0.4431 | -0.3593 | -0.3353 |
+| S016 | Mubert | 15 | 0.0483 | <ins>0.3739</ins> | -0.0161 |
+| S017 | Noise2Music | 18 | 0.0601 | <ins>0.3297</ins> | 0.0550 |
+| S019 | Make-an-Audio | 15 | <ins>0.3373</ins> | 0.2759 | 0.2200 |
+| S020 | tango | 15 | -0.3110 | -0.3914 | -0.3753 |
+| S021 | tango-full | 14 | -0.0579 | -0.4588 | -0.0958 |
+| S022 | tango-full-ft-audiocaps | 14 | -0.0905 | -0.2495 | -0.2274 |
+| S023 | tango2 | 11 | -0.3936 | 0.0092 | <ins>0.0229</ins> |
+| S024 | tango2-full | 15 | <ins>0.0632</ins> | -0.4391 | -0.3921 |
+| S026 | audioldm-s-full | 24 | -0.0419 | -0.1378 | <ins>0.0580</ins> |
+| S027 | audioldm-m-full | 15 | -0.4552 | -0.2258 | -0.4301 |
+| S028 | audioldm-l-full | 12 | 0.0561 | -0.0912 | <ins>0.2070</ins> |
+| S029 | audioldm2 | 14 | 0.0419 | <ins>0.1477</ins> | -0.1940 |
+| S030 | audioldm2-large | 13 | 0.4715 | 0.1479 | <ins>0.7895</ins> |
+| S031 | audioldm2-music | 18 | <ins>0.1903</ins> | -0.1394 | 0.0426 |
+| S032 | audiogen | 20 | <ins>0.4199</ins> | 0.1892 | 0.0573 |
+| S033 | symbolic system(MuseCoco) | 3 | <ins>0.5000</ins> | 0.5000 | 0.5000 |
+| Maximum ρ |  |  | 0.5000 | 0.5630 | <ins>0.7895</ins> |
+
 
 ### Results on unseen systems
 

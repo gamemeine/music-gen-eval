@@ -31,6 +31,14 @@ def metrics(y, p):
     }
 
 
+def metrics_by_system(rows, targets, predictions):
+    systems = np.array([row["system_id"] for row in rows])
+    return {
+        system: metrics(targets[systems == system], predictions[systems == system])
+        for system in sorted(set(systems))
+    }
+
+
 def evaluate(
     checkpoint_path, split_dir, feature_dir, output_dir, device_name="auto", systems=(), show_table=True,
 ):
@@ -58,13 +66,17 @@ def evaluate(
         "split_dir": str(split_dir.resolve()),
         "systems": sorted({row["system_id"] for row in rows}),
         **metrics(targets, predictions),
+        "by_system": metrics_by_system(rows, targets, predictions),
     }
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    results = pd.DataFrame(rows)[["clip_id", "score"]]
+    results = pd.DataFrame(rows)[["clip_id", "system_id", "score"]]
     results["prediction"] = predictions
     results.to_csv(output_dir / "predictions.csv", index=False)
+    pd.DataFrame.from_dict(report["by_system"], orient="index").rename_axis("system_id").to_csv(
+        output_dir / "metrics_by_system.csv"
+    )
 
     (output_dir / "metrics.json").write_text(json.dumps(report, indent=2, allow_nan=False))
 
